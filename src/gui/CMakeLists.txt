@@ -74,7 +74,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     install (CODE "MESSAGE (\"Running macdeployqt to install frameworks in bundle\")")
     install (CODE "execute_process(COMMAND ${MACDEPLOYQT_EXECUTABLE} ${SYNERGY_BUNDLE_APP_DIR} -always-overwrite)")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    install (TARGETS synergy DESTINATION bin)
+    install (TARGETS synergy RUNTIME DESTINATION bin)
 endif()
 
 if (WIN32)

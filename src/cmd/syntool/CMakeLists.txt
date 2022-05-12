@@ -23,5 +23,5 @@ target_link_libraries(syntool
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     install (TARGETS syntool DESTINATION ${SYNERGY_BUNDLE_BINARY_DIR})
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    install (TARGETS syntool DESTINATION bin)
+    install (TARGETS syntool RUNTIME DESTINATION bin)
 endif()

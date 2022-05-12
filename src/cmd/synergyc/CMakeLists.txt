@@ -53,6 +53,6 @@ target_link_libraries(synergyc
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     install (TARGETS synergyc DESTINATION ${SYNERGY_BUNDLE_BINARY_DIR})
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    install (TARGETS synergyc DESTINATION bin)
+    install (TARGETS synergyc RUNTIME DESTINATION bin)
 endif()
 
