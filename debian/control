@@ -1,7 +1,7 @@
 Source: synergy
 Section: utils
 Priority: optional
-Standards-Version: 4.0.0
+Standards-Version: 3.9.7
 Homepage: https://www.symless.com/
 Maintainer: Symless <engineering@symless.com>
 
