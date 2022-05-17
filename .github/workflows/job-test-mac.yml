@@ -2,9 +2,15 @@ name: Mac
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
   pull_request:
-    branches: [master]
+    branches:
+      - master
+    paths:
+      - src/**
+      - .gitmodules
+      - CMakeLists.txt
 
 jobs:
   test-macos:
