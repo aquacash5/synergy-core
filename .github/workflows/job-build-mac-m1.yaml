@@ -14,6 +14,7 @@ jobs:
 
     strategy:
       matrix:
+        name: ["synergy", "synergy-enterprise", "synergy-business"]
         include:
           - name: "synergy"
             remote_folder: "v1-core-standard"
@@ -27,6 +28,7 @@ jobs:
             remote_folder: "v1-core-business"
             enterprise: ""
             business: "1"
+
     env:
       GIT_COMMIT: ${{ github.sha }}
       SYNERGY_ENTERPRISE: ${{ matrix.enterprise }}

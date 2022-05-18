@@ -2,11 +2,9 @@ name: Mac
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
   pull_request:
-    branches:
-      - master
+    branches: [master]
     paths:
       - src/**
       - .gitmodules
@@ -22,6 +20,7 @@ jobs:
 
     strategy:
       matrix:
+        os: ["macos-10.15", [self-hosted, macOS, arm64]]
         include:
           - os: "macos-10.15"
             target: "10.14"

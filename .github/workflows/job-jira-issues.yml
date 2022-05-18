@@ -1,8 +1,9 @@
+name: Send Issue to Jira
+
 on:
   issues:
-    types: [ opened ]
+    types: [opened]
 
-name: Send Issue to Jira
 jobs:
   jiraIssueCreation:
     name: Jira Issue Creation Demo

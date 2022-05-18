@@ -2,11 +2,9 @@ name: Raspberry Pi
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
   pull_request:
-    branches:
-      - master
+    branches: [master]
     paths:
       - src/**
       - .gitmodules
@@ -15,9 +13,11 @@ on:
 jobs:
   test-on-pi:
     runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
         os: [[self-hosted, linux, ARM, pi-3], [self-hosted, linux, ARM64, pi-4]]
+
     env:
       GIT_COMMIT: ${{ github.sha }}
 

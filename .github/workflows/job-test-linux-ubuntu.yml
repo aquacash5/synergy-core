@@ -2,11 +2,9 @@ name: Ubuntu
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
   pull_request:
-    branches:
-      - master
+    branches: [master]
     paths:
       - src/**
       - .gitmodules
@@ -16,15 +14,17 @@ jobs:
   build-arch64:
     runs-on: ubuntu-latest
     container: symless/synergy-core:ubuntu${{ matrix.distro }}
-    env:
-      GIT_COMMIT: ${{ github.sha }}
+
     strategy:
       matrix:
-        distro: ["22.04", "20.04", "18.04"]
+        distro: ["16.04", "18.04", "20.04", "22.04"]
         flag: ["-j"]
         include:
           - distro: "16.04"
             flag: "-j1"
+
+    env:
+      GIT_COMMIT: ${{ github.sha }}
 
     name: ubuntu${{ matrix.distro }}
 
