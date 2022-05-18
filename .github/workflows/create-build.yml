@@ -2,22 +2,18 @@ name: Create Build
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   create-release:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: 'Install git core'
-        run: |
-          npm install @actions/core
-          npm install @octokit/core
-
-      - name: 'Generate next build number'
+      - name: "Generate next build number"
         id: build
         uses: "./.github/actions/build-number"
 
@@ -36,6 +32,6 @@ jobs:
       - name: Run build on Azure
         uses: Azure/pipelines@v1
         with:
-          azure-devops-project-url: 'https://dev.azure.com/symless/synergy-core'
-          azure-pipeline-name: 'symless.synergy-core'
-          azure-devops-token: '${{ secrets.AZURE_DEVOPS_TOKEN }}'
+          azure-devops-project-url: "https://dev.azure.com/symless/synergy-core"
+          azure-pipeline-name: "symless.synergy-core"
+          azure-devops-token: "${{ secrets.AZURE_DEVOPS_TOKEN }}"
