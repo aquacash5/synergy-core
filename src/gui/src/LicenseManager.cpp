@@ -16,6 +16,7 @@
  */
 
 #include "LicenseManager.h"
+#include "license-parser/src/lib.rs.h"
 #include "AppConfig.h"
 #include <ctime>
 #include <stdexcept>
@@ -23,56 +24,58 @@
 #include <QThread>
 #include <QTimer>
 
-LicenseManager::LicenseManager(AppConfig* appConfig) :
-    m_AppConfig(appConfig),
-    m_serialKey(appConfig->edition()) {
+LicenseManager::LicenseManager(AppConfig *appConfig) : m_AppConfig(appConfig),
+                                                       m_serialKey(appConfig->edition())
+{
 }
 
-void
-LicenseManager::setSerialKey(SerialKey serialKey, bool acceptExpired)
+void LicenseManager::setSerialKey(SerialKey serialKey, bool acceptExpired)
 {
     time_t currentTime = ::time(0);
 
-    if (!acceptExpired && serialKey.isExpired(currentTime)) {
+    if (!acceptExpired && serialKey.isExpired(currentTime))
+    {
         throw std::runtime_error("Serial key expired");
     }
 
-    if (!serialKey.isValid()) {
-        #ifdef SYNERGY_BUSINESS
+    if (!serialKey.isValid())
+    {
+#ifdef SYNERGY_BUSINESS
         throw std::runtime_error("The serial key is not compatible with the business version of Synergy.");
-        #else
+#else
         throw std::runtime_error("The serial key is not compatible with the consumer version of Synergy.");
-        #endif
+#endif
     }
 
-    if (serialKey != m_serialKey) {
+    if (serialKey != m_serialKey)
+    {
         using std::swap;
-        swap (serialKey, m_serialKey);
-        m_AppConfig->setSerialKey(QString::fromStdString
-                                  (m_serialKey.toString()));
+        swap(serialKey, m_serialKey);
+        m_AppConfig->setSerialKey(QString::fromStdString(m_serialKey.toString()));
 
         emit showLicenseNotice(getLicenseNotice());
         validateSerialKey();
 
-        if (m_serialKey.edition() != serialKey.edition()) {
+        if (m_serialKey.edition() != serialKey.edition())
+        {
             m_AppConfig->setEdition(m_serialKey.edition());
             emit editionChanged(m_serialKey.edition());
         }
     }
 }
 
-void
-LicenseManager::notifyUpdate(QString fromVersion, QString toVersion) const {
-    if ((fromVersion == "Unknown")
-            && (m_serialKey == SerialKey(kUnregistered))) {
+void LicenseManager::notifyUpdate(QString fromVersion, QString toVersion) const
+{
+    if ((fromVersion == "Unknown") && (m_serialKey == SerialKey(kUnregistered)))
+    {
         return;
     }
 
-    ActivationNotifier* notifier = new ActivationNotifier();
-    notifier->setUpdateInfo (fromVersion, toVersion,
-                             QString::fromStdString(m_serialKey.toString()));
+    ActivationNotifier *notifier = new ActivationNotifier();
+    notifier->setUpdateInfo(fromVersion, toVersion,
+                            QString::fromStdString(m_serialKey.toString()));
 
-    QThread* thread = new QThread();
+    QThread *thread = new QThread();
     connect(notifier, SIGNAL(finished()), thread, SLOT(quit()));
     connect(notifier, SIGNAL(finished()), notifier, SLOT(deleteLater()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
@@ -96,32 +99,35 @@ LicenseManager::activeEditionName() const
     return getEditionName(activeEdition(), m_serialKey.isTrial());
 }
 
-const SerialKey&
+const SerialKey &
 LicenseManager::serialKey() const
 {
     return m_serialKey;
 }
 
-void
-LicenseManager::refresh()
+void LicenseManager::refresh()
 {
-    if (!m_AppConfig->serialKey().isEmpty()) {
-        try {
-            SerialKey serialKey (m_AppConfig->serialKey().toStdString());
+    if (!m_AppConfig->serialKey().isEmpty())
+    {
+        try
+        {
+            SerialKey serialKey(m_AppConfig->serialKey().toStdString());
             setSerialKey(serialKey, true);
-        } catch (...) {
+        }
+        catch (...)
+        {
             m_AppConfig->clearSerialKey();
         }
     }
-    if (!m_serialKey.isValid()) {
+    if (!m_serialKey.isValid())
+    {
         emit InvalidLicense();
     }
 }
 
-void
-LicenseManager::skipActivation() const
+void LicenseManager::skipActivation() const
 {
-    notifyActivation ("skip:unknown");
+    notifyActivation("skip:unknown");
 }
 
 QString
@@ -130,20 +136,20 @@ LicenseManager::getEditionName(Edition const edition, bool trial)
     SerialKeyEdition KeyEdition(edition);
     std::string name = KeyEdition.getDisplayName();
 
-    if (trial) {
+    if (trial)
+    {
         name += " (Trial)";
     }
 
-    return QString::fromUtf8 (name.c_str(), static_cast<int>(name.size()));
+    return QString::fromUtf8(name.c_str(), static_cast<int>(name.size()));
 }
 
-void
-LicenseManager::notifyActivation(QString identity) const
+void LicenseManager::notifyActivation(QString identity) const
 {
-    ActivationNotifier* notifier = new ActivationNotifier();
+    ActivationNotifier *notifier = new ActivationNotifier();
     notifier->setIdentity(identity);
 
-    QThread* thread = new QThread();
+    QThread *thread = new QThread();
     connect(notifier, SIGNAL(finished()), thread, SLOT(quit()));
     connect(notifier, SIGNAL(finished()), notifier, SLOT(deleteLater()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
@@ -159,11 +165,14 @@ LicenseManager::getLicenseNotice() const
 {
     QString Notice;
 
-    if (m_serialKey.isTemporary()){
-        if (m_serialKey.isTrial()){
+    if (m_serialKey.isTemporary())
+    {
+        if (m_serialKey.isTrial())
+        {
             Notice = getTrialNotice();
         }
-        else{
+        else
+        {
             Notice = getTemporaryNotice();
         }
     }
@@ -176,20 +185,22 @@ LicenseManager::getTrialNotice() const
 {
     QString Notice;
 
-    if (m_serialKey.isExpired(::time(0))){
+    if (m_serialKey.isExpired(::time(0)))
+    {
         Notice = "<html><head/><body><p>"
                  "Trial expired - "
                  "<a href=\"https://symless.com/synergy/purchase?source=gui\" style=\"color: #FFFFFF;\">Buy now</a>"
                  "</p></body></html>";
     }
-    else{
+    else
+    {
         Notice = "<html><head/><body><p>"
                  "Trial expires in %1 day%2 - "
                  "<a href=\"https://symless.com/synergy/purchase?source=gui\" style=\"color: #FFFFFF;\">Buy now</a>"
                  "</p></body></html>";
 
         time_t daysLeft = m_serialKey.daysLeft(::time(0));
-        Notice = Notice.arg (daysLeft).arg ((daysLeft == 1) ? "" : "s");
+        Notice = Notice.arg(daysLeft).arg((daysLeft == 1) ? "" : "s");
     }
 
     return Notice;
@@ -200,34 +211,38 @@ LicenseManager::getTemporaryNotice() const
 {
     QString Notice;
 
-    if (m_serialKey.isExpired(::time(0))) {
+    if (m_serialKey.isExpired(::time(0)))
+    {
         Notice = "<html><head/><body><p>"
                  "License expired - "
                  "<a href=\"https://symless.com/synergy/purchase?source=gui\" style=\"color: #FFFFFF;\">Renew now</a>"
                  "</p></body></html>";
     }
-    else if (m_serialKey.isExpiring(::time(0))) {
+    else if (m_serialKey.isExpiring(::time(0)))
+    {
         Notice = "<html><head/><body><p>"
                  "License expires in %1 day%2 - "
                  "<a href=\"https://symless.com/synergy/purchase?source=gui\" style=\"color: #FFFFFF;\">Renew now</a>"
                  "</p></body></html>";
 
         time_t daysLeft = m_serialKey.daysLeft(::time(0));
-        Notice = Notice.arg (daysLeft).arg ((daysLeft == 1) ? "" : "s");
+        Notice = Notice.arg(daysLeft).arg((daysLeft == 1) ? "" : "s");
     }
 
     return Notice;
 }
 
-void
-LicenseManager::validateSerialKey() const
+void LicenseManager::validateSerialKey() const
 {
-    if (m_serialKey.isValid()) {
-        if (m_serialKey.isTemporary()){
-           QTimer::singleShot(m_serialKey.getSpanLeft(), this, SLOT(validateSerialKey()));
+    if (m_serialKey.isValid())
+    {
+        if (m_serialKey.isTemporary())
+        {
+            QTimer::singleShot(m_serialKey.getSpanLeft(), this, SLOT(validateSerialKey()));
         }
     }
-    else{
+    else
+    {
         emit InvalidLicense();
     }
 }

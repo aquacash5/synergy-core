@@ -71,6 +71,18 @@ endif()
 #
 include (cmake/Version.cmake)
 
+#
+# Rust integration
+#
+include(FetchContent)
+FetchContent_Declare(
+    Corrosion
+    GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
+    GIT_TAG v0.2.1 # Optionally specify a commit hash, version tag or branch here
+)
+FetchContent_MakeAvailable(Corrosion)
+include(cmake/corrosion_cxx.cmake)
+
 # TODO: Find out why we need these, and remove them
 if (COMMAND cmake_policy)
     cmake_policy (SET CMP0003 NEW)
