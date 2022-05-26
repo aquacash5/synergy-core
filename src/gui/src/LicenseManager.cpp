@@ -16,7 +16,6 @@
  */
 
 #include "LicenseManager.h"
-#include "license-parser/src/lib.rs.h"
 #include "AppConfig.h"
 #include <ctime>
 #include <stdexcept>
