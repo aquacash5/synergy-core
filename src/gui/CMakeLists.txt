@@ -1,16 +1,5 @@
 cmake_minimum_required (VERSION 3.4)
 
-include(FetchContent)
-
-FetchContent_Declare(
-    Corrosion
-    GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
-    GIT_TAG v0.2.1 # Optionally specify a commit hash, version tag or branch here
-)
-
-FetchContent_MakeAvailable(Corrosion)
-
-
 find_package (Qt5 COMPONENTS Core Widgets Network LinguistTools)
 set (CMAKE_AUTOMOC ON)
 set (CMAKE_AUTORCC ON)
@@ -52,7 +41,7 @@ if (SYNERGY_ENTERPRISE)
     list (REMOVE_ITEM LEGACY_GUI_SOURCE_FILES ${LEGACY_ACTIVATION_FILES})
     list (REMOVE_ITEM LEGACY_GUI_UI_FILES ${LEGACY_ACTIVATION_FILES})
 else ()
-    corrosion_import_crate(MANIFEST_PATH ${CMAKE_SOURCE_DIR}/ext/license-parser/Cargo.toml)
+    add_library_rust(PATH ${CMAKE_SOURCE_DIR}/ext/license-parser NAMESPACE rust)
 endif ()
 
 list (REMOVE_ITEM LEGACY_GUI_SOURCE_FILES ${LEGACY_ZEROCONF_FILES})
@@ -72,7 +61,7 @@ add_executable (synergy WIN32
 )
 
 include_directories (./src)
-target_link_libraries (synergy shared license-parser)
+target_link_libraries (synergy shared rust::license-parser)
 
 qt5_use_modules (synergy Core Widgets Network)
 target_compile_definitions (synergy PRIVATE -DSYNERGY_VERSION_STAGE="${SYNERGY_VERSION_STAGE}")
