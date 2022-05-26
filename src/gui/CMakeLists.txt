@@ -40,8 +40,6 @@ find_program(MACDEPLOYQT_EXECUTABLE macdeployqt HINTS "${_qt_bin_dir}")
 if (SYNERGY_ENTERPRISE)
     list (REMOVE_ITEM LEGACY_GUI_SOURCE_FILES ${LEGACY_ACTIVATION_FILES})
     list (REMOVE_ITEM LEGACY_GUI_UI_FILES ${LEGACY_ACTIVATION_FILES})
-else ()
-    add_library_rust(PATH ${CMAKE_SOURCE_DIR}/ext/license-parser NAMESPACE rust)
 endif ()
 
 list (REMOVE_ITEM LEGACY_GUI_SOURCE_FILES ${LEGACY_ZEROCONF_FILES})
@@ -61,7 +59,7 @@ add_executable (synergy WIN32
 )
 
 include_directories (./src)
-target_link_libraries (synergy shared rust::license-parser)
+target_link_libraries (synergy shared)
 
 qt5_use_modules (synergy Core Widgets Network)
 target_compile_definitions (synergy PRIVATE -DSYNERGY_VERSION_STAGE="${SYNERGY_VERSION_STAGE}")

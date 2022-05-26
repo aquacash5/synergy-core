@@ -26,6 +26,7 @@
 #include <iomanip>
 #include <stdexcept>
 #include "SerialKeyEdition.h"
+#include "license-parser/src/lib.rs.h"
 
 using namespace std;
 static std::string hexEncode (std::string const& str);
@@ -277,6 +278,9 @@ SerialKey::parse(std::string plainSerial)
             sscanf(parts.at(8).c_str(), "%lld", &m_expireTime);
             valid = true;
         }
+    } else {
+        shared::LicenseData data = validate_license(rust::String(plainSerial));
+        m_KeyType.setKeyType(std::string(data.license_type));
     }
 
     return valid;
