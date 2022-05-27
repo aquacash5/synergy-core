@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-CMAKE_POLICY(SET CMP0071 NEW)
+# CMAKE_POLICY(SET CMP0071 NEW)
 
 file(GLOB headers "*.h")
 file(GLOB sources "*.cpp")
