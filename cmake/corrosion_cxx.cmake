@@ -35,20 +35,27 @@ function(add_library_rust)
 
     ## Import Rust target
     corrosion_import_crate(MANIFEST_PATH "${_LIB_PATH}/Cargo.toml")
-
+    
     ## Set cxxbridge values
 
     # parse stem
     _get_stem_name_of_path(PATH ${_LIB_PATH})
     set(_LIB_PATH_STEM ${STEM_OF_PATH})
+
+    if (CMAKE_VS_PLATFORM_NAME)
+        set(CXXBRIDGE_BINARY_FOLDER ${CMAKE_BINARY_DIR}/${CMAKE_VS_PLATFORM_NAME}/$<CONFIG>/cargo/build/${_CORROSION_RUST_CARGO_TARGET}/cxxbridge) 
+    elseif(CMAKE_CONFIGURATION_TYPES)
+        message(FATAL_ERROR "Config types no platform")
+        # set(CXXBRIDGE_BINARY_FOLDER ${CMAKE_BINARY_DIR}/cargo/build/${_CORROSION_RUST_CARGO_TARGET}/cxxbridge) 
+    else()
+        set(CXXBRIDGE_BINARY_FOLDER ${CMAKE_BINARY_DIR}/cargo/build/${_CORROSION_RUST_CARGO_TARGET}/cxxbridge)
+    endif()
     
-    set(CXXBRIDGE_BINARY_FOLDER ${CMAKE_BINARY_DIR}/cargo/build/${_CORROSION_RUST_CARGO_TARGET}/cxxbridge) 
     set(COMMON_HEADER ${CXXBRIDGE_BINARY_FOLDER}/rust/cxx.h)
     set(BINDING_HEADER ${CXXBRIDGE_BINARY_FOLDER}/${_LIB_PATH_STEM}/${_CXX_BRIDGE_SOURCE_FILE}.h)
     set(BINDING_SOURCE ${CXXBRIDGE_BINARY_FOLDER}/${_LIB_PATH_STEM}/${_CXX_BRIDGE_SOURCE_FILE}.cc)
     set(CXX_BINDING_INCLUDE_DIR ${CXXBRIDGE_BINARY_FOLDER})
     
-    message(STATUS "LOOK AT ME!!!  ${_CORROSION_RUST_CARGO_TARGET}")
 
     ## Create cxxbridge target
     add_custom_command(
