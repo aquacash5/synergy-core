@@ -20,24 +20,28 @@ jobs:
           - os: "macos-10.15"
             target: "10.14"
             shell: "bash"
-          - os: [self-hosted, macOS, arm64]
-            target: ""
-            shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
+          # - os: [self-hosted, macOS, arm64]
+          #   target: ""
+          #   shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
 
     env:
       GIT_COMMIT: ${{ github.sha }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          submodules: "recursive"
+          fetch-depth: "0"
 
       - name: Install brew dependencies
         run: brew bundle --file=- <<< "brew 'qt5'; brew 'openssl'"
 
-      - name: Install latest nightly
+      - name: Install rust stable
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
+          components: cargo, rustc, rust-std
 
       - name: Build
         env:

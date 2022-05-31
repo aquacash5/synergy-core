@@ -24,15 +24,17 @@ jobs:
     name: ubuntu${{ matrix.distro }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: "recursive"
+          fetch-depth: "0"
 
-      - name: Install latest nightly
+      - name: Install rust stable
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
+          components: cargo, rustc, rust-std
 
       - name: Work around https://github.com/actions/checkout/issues/766
         run: |

@@ -19,13 +19,17 @@ jobs:
       QT_LIB_DIR: ${{ github.workspace }}\deps\Qt\5.12.6
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          submodules: "recursive"
+          fetch-depth: "0"
 
-      - name: Install latest nightly
+      - name: Install rust stable
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
+          components: cargo, rustc, rust-std
 
       - name: Cache Qt
         id: cache-qt
