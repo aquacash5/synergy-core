@@ -71,12 +71,6 @@ endif()
 #
 include (cmake/Version.cmake)
 
-#
-# Rust integration
-#
-add_subdirectory(ext/corrosion)
-include(cmake/corrosion_cxx.cmake)
-
 # TODO: Find out why we need these, and remove them
 if (COMMAND cmake_policy)
     cmake_policy (SET CMP0003 NEW)
@@ -367,6 +361,15 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
         endif()
     endif()
 endif()
+
+#
+# Rust integration
+#
+if(NOT EXISTS "${PROJECT_SOURCE_DIR}/ext/corrosion/CMakeLists.txt")
+    message(FATAL_ERROR "The submodules were not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
+add_subdirectory(ext/corrosion)
+include(cmake/corrosion_cxx.cmake)
 
 #
 # Google Test
