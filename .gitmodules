@@ -7,3 +7,6 @@
 [submodule "ext/pugixml"]
 	path = ext/pugixml
 	url = https://github.com/zeux/pugixml
+[submodule "ext/corrosion"]
+	path = ext/corrosion
+	url = https://github.com/corrosion-rs/corrosion
