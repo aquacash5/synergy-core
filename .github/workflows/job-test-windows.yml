@@ -9,6 +9,7 @@ on:
 jobs:
   build-arch64:
     runs-on: windows-2019
+    if: always()
 
     env:
       GIT_COMMIT: ${{ github.sha }}

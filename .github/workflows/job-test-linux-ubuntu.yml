@@ -10,6 +10,7 @@ jobs:
   build-arch64:
     runs-on: ubuntu-latest
     container: symless/synergy-core:ubuntu${{ matrix.distro }}
+    if: always()
     env:
       GIT_COMMIT: ${{ github.sha }}
     strategy:
